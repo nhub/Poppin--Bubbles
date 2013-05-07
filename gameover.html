@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Poppin' Bubbles</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #007fff;
+		}
+		
+		#help{
+			position: absolute;
+			z-index: 20;
+			color: slate blue;
+			top: 20px;
+			left: 120px;
+		}
+	</style>
+	<script src="pixi.js"></script>
+</head>
+	</style>
+
+
+	
+	<script src="pixi.js"></script>
+</head>
+<body>
+<audio id="music1" controls>
+  <source src="http://developer.mozilla.org/@api/deki/files/2926/=AudioTest_(1).ogg"/>
+  Your browser does not support HTML5 video.
+</audio>
+	<script>
+		
+	// create an new instance of a pixi stage
+	// the second parameter is interactivity...
+	var interactive = true;
+	var stage = new PIXI.Stage(0xffffff, interactive); //stage color set to white
+	
+	// create a renderer instance.
+	var renderer = PIXI.autoDetectRenderer(620, 680); // stage size=renderer
+	
+	// add the renderer view element to the DOM
+	document.body.appendChild(renderer.view);
+	
+	requestAnimFrame( animate );
+	
+	// create a background..
+	var background = PIXI.Sprite.fromImage("gameoverbg.PNG");
+	
+	// add background to stage..
+	stage.addChild(background);
+	
+						   
+	var replay = PIXI.Sprite.fromImage("tryagain.PNG");
+	stage.addChild(replay);
+	
+	replay.position.x = 10;
+	replay.position.y = 400-40;
+	
+	replay.setInteractive(true);
+	
+	replay.click = replay.tap = function(){
+		
+		//start a new game
+		window.location= "fgame2.html";
+		
+	}
+                     
+	function animate() {
+	
+	    requestAnimFrame( animate );
+	    // render the stage   
+	    
+	    // do a test..
+	   	
+	    renderer.render(stage);
+	}
+	music=document.getElementById("music1");
+	//stage.addChild(music);
+	music.autoplay=true;
+	music.load();
+	music.loop=true;
+	count=0;
+	var mute = PIXI.Sprite.fromImage("mutebutton.jpg");
+	stage.addChild(mute);
+	
+	mute.position.x = 620 - 55;
+	mute.position.y = 40-35;
+	
+	mute.setInteractive(true);
+	
+		mute.click = mute.tap = function(){
+		//mute music
+		count=count+1;
+	if((count%2)==1){
+	music.muted=true;
+	}
+	 else {
+	    music.muted= false;
+		}
+	}
+	// add a logo!
+	var pixiLogo = PIXI.Sprite.fromImage("pixi.png");
+	stage.addChild(pixiLogo);
+	
+	pixiLogo.position.x = 620 - 56;
+	pixiLogo.position.y = 680- 32;
+	
+	pixiLogo.setInteractive(true);
+	
+	pixiLogo.click = pixiLogo.tap = function(){
+		
+		var win=window.open("https://github.com/GoodBoyDigital/pixi.js", '_blank');
+		
+	}
+	</script>
+
+	</body>
+</html>
+
+
