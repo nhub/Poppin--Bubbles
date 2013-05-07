@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <title>Poppin Bubbles</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #007fff;
+		}
+		
+		#help{
+			position: absolute;
+			z-index: 20;
+			color: slate blue;
+			top: 20px;
+			left: 120px;
+		}
+	</style>
+
+	<script src="pixi.js"></script>
+</head>
+<body>
+<audio id="music1" controls>
+  <source src="supermario.ogg"/>
+  Your browser does not support HTML5 audio.
+</audio>
+	<script>
+		
+	// create an new instance of a pixi stage
+	// the second parameter is interactivity...
+	var interactive = true;
+	var stage = new PIXI.Stage(0xffffff, interactive); //stage color set to white
+	
+	// create a renderer instance.
+	var renderer = PIXI.autoDetectRenderer(620, 680); // stage size=renderer
+	
+	// add the renderer view element to the DOM
+	document.body.appendChild(renderer.view);
+	
+	requestAnimFrame( animate );
+	
+	// create a background..
+	var background = PIXI.Sprite.fromImage("newdraw.jpg");
+	
+	// add background to stage..
+	stage.addChild(background);
+	
+	// create some textures from an image path
+	var textureButton1 = PIXI.Texture.fromImage("playbutton.png");//3adi
+	var textureButton2 = PIXI.Texture.fromImage("helpbutton.png");
+	var buttons = [];
+	
+	var buttonPositions = [600-145-130,200,//x,y (0,0) at top left corner
+						   600-145-130, 150*2];
+						   
+						   
+						   
+	for (var i=0; i < 2; i++) 
+	{
+		if(i==0){var button = new PIXI.Sprite(textureButton1);}
+		else {var button=new PIXI.Sprite(textureButton2);}
+		button.anchor.x = 0.5;
+		button.anchor.y = 0.5;
+		
+		button.position.x = buttonPositions[i*2];
+		button.position.y = buttonPositions[i*2 + 1];
+		
+		// make the button interactive..		
+		button.setInteractive(true);
+		
+		// add it to the stage
+		stage.addChild(button);
+		
+		// add button to array
+		buttons.push(button);
+	};
+		buttons[0].click = function(data){
+			// click! PLAY
+			console.log("CLICK!");
+		//go to game
+		window.location= "fgame2.html";
+		}
+		buttons[1].click = function(data){
+			// click! HELP
+			console.log("CLICK!");
+			alert("Pop all the bubbles using right click and avoid the rocks on your way by moving the mouse!")
+		}
+		
+	
+                     
+	function animate() {
+	
+	    requestAnimFrame( animate );
+	    // render the stage   
+	    renderer.render(stage);
+	}
+	music=document.getElementById("music1");
+	//stage.addChild(music);
+	music.autoplay=true;
+	music.load();
+	music.loop=true;
+	count=0;
+	var mute = PIXI.Sprite.fromImage("mutebutton.jpg");
+	stage.addChild(mute);
+	
+	mute.position.x = 620 - 55;
+	mute.position.y = 40-35;
+	
+	mute.setInteractive(true);
+	
+		mute.click = mute.tap = function(){
+		//mute music
+		count=count+1;
+	if((count%2)==1){
+	music.muted=true;
+	}
+	 else {
+	    music.muted= false;
+		}
+	}
+	// add a logo!
+	var pixiLogo = PIXI.Sprite.fromImage("pixi.png");
+	stage.addChild(pixiLogo);
+	
+	pixiLogo.position.x = 620 - 56;
+	pixiLogo.position.y = 680- 32;
+	
+	pixiLogo.setInteractive(true);
+	
+	pixiLogo.click = pixiLogo.tap = function(){
+		
+		var win=window.open("https://github.com/GoodBoyDigital/pixi.js", '_blank');
+		
+	}
+	</script>
+
+	</body>
+</html>
