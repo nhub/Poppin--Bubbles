@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <title>Poppin' Bubbles</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #007fff;
+		}
+		
+		#help{
+			position: absolute;
+			z-index: 20;
+			color: slate blue;
+			top: 20px;
+			left: 120px;
+		}
+	</style>
+	<script src="pixi.js"></script>
+</head>
+<body>
+<audio id="music1" controls>
+  <source src="supermario.ogg"/>
+  Your browser does not support HTML5 audio.
+</audio>
+<script>
+WebFontConfig = {
+	  google: {
+	    families: [ 'Snippet', 'Arvo:700italic', 'Podkova:700' ]
+	  },
+
+	  active: function() {
+	    // do something
+	    init();
+	  },
+	
+	};
+	(function() {
+        var wf = document.createElement('script');
+        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+            '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+        wf.type = 'text/javascript';
+        wf.async = 'true';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wf, s);
+      })();
+	  function init()
+    {
+    	
+	// create an new instance of a pixi stage
+	// the second parameter is interactivity...
+	var interactive = true;
+	var stage = new PIXI.Stage(0xffffff, interactive); //stage color set to white
+	var w=620;
+	var h=680;
+	var needles = [];
+	// create a renderer instance.
+	var renderer = PIXI.autoDetectRenderer(w, h); // stage size=renderer
+	
+	// add the renderer view element to the DOM
+	document.body.appendChild(renderer.view);
+	
+	requestAnimFrame( animate );
+	
+	// create a background..
+	var background = PIXI.Sprite.fromImage("kittydraw.jpg");
+	
+	// add background to stage..
+	stage.addChild(background);
+	//============================================================================
+	//SCORE
+	//============================================================================
+		// create a text object that will be updated..
+		var countingText = new PIXI.Text("SCORE: 0", "bold italic 25px Arvo", "#3e1707", "#a4410e", 7);
+		countingText.position.x = 620/2;
+		countingText.position.y = 50;
+		countingText.anchor.x = 0.5;
+		stage.addChild(countingText);
+		score = 0;
+    //============================================================================
+	//dude
+	//============================================================================
+		dude=PIXI.Sprite.fromImage("dude.png");
+		dude.setInteractive(true);
+		stage.addChild(dude);
+		var bubbles=[];	
+		var rocks= [];
+		var x = w*0.5;
+		var y = h*0.8;
+		dude.anchor.x=0.5;
+		dude.anchor.y=0.5;
+		dude.position.x=x;
+		dude.position.y=y;
+		
+		dude.mousemove = dude.touchmove = function(data)
+     {
+		this.data = data;
+		// need to get parent coords..
+		var newPosition = this.data.getLocalPosition(this.parent);
+		this.position.x = newPosition.x;
+		this.position.y = newPosition.y;
+	}	
+		dude.click=dude.tap=function(){
+			var needle= PIXI.Sprite.fromImage("needle.png");
+			needle.anchor.x=0.5;
+	        needle.anchor.y=0.5;
+	        needle.position.x=dude.position.x+60;
+	        needle.position.y=dude.position.y+10;
+			needle.setInteractive(true);
+			stage.addChild(needle);
+			needles.push(needle);
+			requestAnimFrame(egri);
+			} 
+	//-----------------------------------------------------------------------------------------------
+
+	
+	//-----------------------------------------------------------------------------------------------
+	
+	setInterval(spawnBubble,2000);
+	setInterval(spawnRock,2000);
+	setInterval(burstBubble,2000);
+	setInterval(loseLife,2000);
+	
+	function spawnBubble(){
+		
+			var bub= PIXI.Sprite.fromImage("trans.png");
+			stage.addChild(bub);
+			bubbles.push(bub);
+			bub.position.x=Math.random()*w;
+			bub.position.y=Math.random()*100;
+			bub.anchor.x=0.5;
+			bub.anchor.y=0.5;
+			requestAnimFrame(egro);
+	}
+
+		
+	function spawnRock(){
+	var rock=PIXI.Sprite.fromImage("rocks.png");
+	stage.addChild(rock);
+	rocks.push(rock);
+	rock.position.x=Math.random()*w;
+	rock.position.y=Math.random()*100;
+	rock.anchor.x=0.5;
+	rock.anchor.y=0.5;
+	requestAnimFrame(egro);
+	}
+	
+	function animate() {
+	
+	    requestAnimFrame( animate );
+	    renderer.render(stage);
+	}
+	
+	function egri() {
+	   
+	    requestAnimFrame( egri );
+		for(var bla=0; bla<needles.length; bla++)
+		needles[bla].position.y = needles[bla].position.y - 1;		
+		renderer.render(stage);
+	}
+	
+	function egro() {
+	   
+	    requestAnimFrame( egro );
+
+		for (var i = 0; i < bubbles.length; i ++) {
+			bubbles[i].position.y = bubbles[i].position.y + 1;
+		}
+		for(var r=0; r<rocks.length; r++){
+		    rocks[r].position.y = rocks[r].position.y + 1;
+		}
+		
+		renderer.render(stage);
+	}
+
+		
+	function burstBubble(){
+	requestAnimFrame( burstBubble );
+    for(var m=0; m<needles.length; m++){
+	    for(var n=0; n<bubbles.length; n ++){
+		  var b = needles[m];
+		  var a = bubbles[n];
+		 // var score = 0;
+		  if((b.position.x < (a.position.x + 100)) && ((b.position.x + 100) > a.position.x) 
+		  && (b.position.y < (a.position.y + 100)) && ((b.position.y + 100) > a.position.y)){
+	            bubbles.splice(n,1);
+				needles.splice(m,1);
+				stage.removeChild(a);
+				stage.removeChild(b);
+				score ++;
+				// update the text...
+				countingText.setText("SCORE: "  + score )
+				if(score==5)
+				{
+					alert("COOL! Promoting to level 2! U'll have to fight more bubbles. Remember a bubble will need 2 bullets to burst. Good luck warrior :P");
+					window.location="level2.html";
+					}
+				
+	}
+	}
+	}		    renderer.render(stage);
+
+	}
+	var Lives = 1;
+    function loseLife(){
+     requestAnimFrame( loseLife );
+     for(var j=0; j<rocks.length; j++){
+     var c = rocks[j];
+     if((c.position.x < (dude.position.x + 100)) && ((c.position.x + 100) > dude.position.x) 
+	 && (c.position.y < (dude.position.y + 100)) && ((c.position.y + 100) > dude.position.y)){
+     Lives --;
+     if(Lives == 0){
+     window.location = "gameover.html";
+}
+}
+}
+}
+	 
+	//===============================================================================
+		//Music thing
+	//===============================================================================
+	var music=document.getElementById("music1");
+	music.autoplay=true;
+	music.load();
+	music.loop=true;
+	
+	var count=0;
+	var mute = PIXI.Sprite.fromImage("mutebutton.jpg");
+	stage.addChild(mute);
+	mute.position.x = 620 - 105;
+	mute.position.y = 40-35;
+	mute.setInteractive(true);
+	
+	mute.click = mute.tap = function(){
+		//mute music
+		count=count+1;
+	
+	if((count%2)==1){
+	music.muted=true;
+	}
+	 else {
+	    music.muted= false;
+		}
+	}
+	//===========================================================================
+	//buttons
+	//===========================================================================
+	var replay = PIXI.Sprite.fromImage("ngbutton.jpg");
+	stage.addChild(replay);
+	
+	replay.position.x = 620 - 50;
+	replay.position.y = 40-35;
+	
+	replay.setInteractive(true);
+	
+	replay.click = replay.tap = function(){
+		
+		//start a new game
+		window.location= "fgame2.html";
+		
+	}
+	var pause = PIXI.Sprite.fromImage("pausebutton.jpg");
+	stage.addChild(pause);
+	
+	pause.position.x = 620 - 55;
+	pause.position.y = 100 - 45;
+	
+	pause.setInteractive(true);
+	
+	pause.click = pause.tap = function(){
+		alert("paused")
+		//pause game
+	}
+		
+	}
+</script>
+
+</body>
+</html>
